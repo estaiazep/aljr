@@ -103,15 +103,6 @@
   </div>
 
   <div class="game-container">
-    <!-- Free Signals Counter - Moved closer to game screen -->
-    <div class="signals-counter">
-      <div class="counter-icon">🎯</div>
-      <div class="counter-text">
-        <span class="counter-label">Signaux Gratuits:</span>
-        <span id="signals-count" class="counter-number">8</span>
-      </div>
-    </div>
-
     <div class="crack crack1" style="left: 42vw; top: 2vh; rotate: 95deg; scale: 1.5;">
       <img src="crack1.svg" alt="crack">
     </div>
@@ -270,63 +261,60 @@
   </div>
 </div>
 
-<!-- Upgrade Bot Modal -->
-<div id="upgrade-modal" class="modal-overlay" style="display: none;">
-  <div class="modal-content upgrade-modal">
-    <div class="upgrade-header">
-      <div class="upgrade-icon">🚀</div>
-      <h2 class="upgrade-title">SIGNAUX GRATUITS TERMINÉS</h2>
-      <div class="upgrade-subtitle">Passez au Bot 2.0 Premium!</div>
+<!-- Premium Modal -->
+<div id="premium-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-content deposit-modal">
+    <div class="deposit-header">
+      <div class="deposit-icon">🚀</div>
+      <h2 class="deposit-title">SIGNAUX GRATUITS ÉPUISÉS</h2>
     </div>
     
-    <div class="upgrade-body">
-      <div class="upgrade-benefits">
-        <div class="benefit-item">
-          <div class="benefit-icon">📈</div>
-          <span>+30% de chances de victoire</span>
+    <div class="deposit-body">
+      <div class="deposit-message">
+        <p class="deposit-text">🎯 Vous avez utilisé vos <span class="highlight">7 signaux gratuits</span></p>
+        <p class="deposit-text">🚀 Débloquez le <span class="highlight">BOT 2.0 PREMIUM</span> pour un accès illimité!</p>
+      </div>
+      
+      <div class="welcome-features" style="margin: 20px 0;">
+        <div class="feature-item">
+          <div class="feature-icon">♾️</div>
+          <span>Signaux illimités 24/7</span>
         </div>
-        <div class="benefit-item">
-          <div class="benefit-icon">⚡</div>
-          <span>3x plus de signaux par jour</span>
+        <div class="feature-item">
+          <div class="feature-icon">⚡</div>
+          <span>Vitesse de génération 3x plus rapide</span>
         </div>
-        <div class="benefit-item">
-          <div class="benefit-icon">💎</div>
-          <span>Signaux premium illimités</span>
+        <div class="feature-item">
+          <div class="feature-icon">🎯</div>
+          <span>Précision améliorée 98%+</span>
         </div>
-        <div class="benefit-item">
-          <div class="benefit-icon">🎯</div>
-          <span>Précision jusqu'à 98%</span>
+        <div class="feature-item">
+          <div class="feature-icon">💎</div>
+          <span>Algorithmes premium exclusifs</span>
         </div>
       </div>
       
-      <div class="upgrade-price">
-        <div class="price-label">Mise à niveau pour seulement:</div>
-        <div class="price-amount">1,200 DA</div>
+      <div class="deposit-message">
+        <p class="deposit-text">💰 Paiement unique: <span class="highlight">1200 DA</span></p>
+        <p class="deposit-text">🔓 Accès à vie au BOT 2.0</p>
       </div>
       
-      <div class="upgrade-unlock-section">
-        <p class="upgrade-unlock-label">Code secret de déverrouillage:</p>
-        <div class="upgrade-unlock-input-container">
-          <input type="text" id="upgrade-code-input" class="upgrade-code-input" placeholder="Entrez le code secret" maxlength="4">
+      <div class="unlock-section">
+        <p class="unlock-label">Code de déverrouillage premium:</p>
+        <div class="unlock-input-container">
+          <input type="text" id="premium-unlock-input" class="unlock-code-input" placeholder="Entrez le code premium" maxlength="4">
         </div>
-        <div id="upgrade-error" class="upgrade-error" style="display: none;">Code secret incorrect</div>
-        <div id="upgrade-success" class="upgrade-success" style="display: none;">✅ Bot 2.0 activé avec succès!</div>
-      </div>
-      
-      <div class="screenshot-section">
-        <p class="screenshot-instruction">Après le dépôt, envoyez une capture d'écran:</p>
-        <button id="send-screenshot-button" class="send-screenshot-btn">
-          📸 Envoyer Capture d'Écran
-        </button>
+        <div id="premium-unlock-error" class="unlock-error" style="display: none;">Code premium incorrect</div>
+        <div id="premium-unlock-success" class="unlock-success" style="display: none;">🚀 BOT 2.0 PREMIUM activé!</div>
       </div>
     </div>
     
-    <div class="upgrade-footer">
-      <button id="upgrade-bot-button" class="upgrade-bot-btn">
-        🚀 Activer Bot 2.0
+    <div class="deposit-footer">
+      <button id="unlock-premium-button" class="unlock-bot-btn">
+        🚀 Déverrouiller Premium
       </button>
-      <button id="upgrade-deposit-button" class="upgrade-deposit-btn">
-        💰 Faire le Dépôt
+      <button id="get-premium-button" class="activate-now-btn">
+        💬 Obtenir Accès Premium
       </button>
     </div>
   </div>
@@ -343,31 +331,10 @@
 </script>
 
 <script>
-// Free signals counter
-let freeSignalsCount = 8;
-
-// Update signals counter display
-function updateSignalsCounter() {
-  const counterElement = document.getElementById("signals-count");
-  if (counterElement) {
-    counterElement.textContent = freeSignalsCount;
-    
-    // Change color when low
-    if (freeSignalsCount <= 3) {
-      counterElement.style.color = "#ff4757";
-    } else {
-      counterElement.style.color = "#00ff88";
-    }
-  }
-}
-
 // Welcome Screen Logic
 function startBot() {
   document.getElementById("welcome-screen").style.display = "none";
   document.getElementById("main-game").style.display = "block";
-  
-  // Initialize signals counter
-  updateSignalsCounter();
   
   // Always show verification modal after 1 second for new users
   setTimeout(() => {
@@ -467,33 +434,6 @@ function unlockBot() {
   }
 }
 
-// Upgrade Bot Logic
-function upgradeBot() {
-  const upgradeCode = document.getElementById("upgrade-code-input").value;
-  const errorElement = document.getElementById("upgrade-error");
-  const successElement = document.getElementById("upgrade-success");
-  
-  // Hide previous messages
-  errorElement.style.display = "none";
-  successElement.style.display = "none";
-  
-  if (upgradeCode === "1122") {
-    successElement.style.display = "block";
-    localStorage.setItem('bot_upgraded', 'true');
-    
-    // Reset signals counter to unlimited (or high number)
-    freeSignalsCount = 999;
-    updateSignalsCounter();
-    
-    // Close modal after 2 seconds
-    setTimeout(() => {
-      document.getElementById("upgrade-modal").style.display = "none";
-    }, 2000);
-  } else {
-    errorElement.style.display = "block";
-  }
-}
-
 // Function to open developer chat for activation
 function openDeveloperChatForActivation() {
   const developerUsername = "Ibrahim_DZ_bot";
@@ -520,10 +460,41 @@ function openDeveloperChatForId() {
   }
 }
 
-// Function to open developer chat for screenshot
-function openDeveloperChatForScreenshot() {
+// Add the premium unlock logic in the script section, after the existing unlock logic
+
+// Premium Unlock Logic
+function unlockPremium() {
+  const premiumCode = document.getElementById("premium-unlock-input").value;
+  const errorElement = document.getElementById("premium-unlock-error");
+  const successElement = document.getElementById("premium-unlock-success");
+  
+  // Hide previous messages
+  errorElement.style.display = "none";
+  successElement.style.display = "none";
+  
+  if (premiumCode === "0419") {
+    successElement.style.display = "block";
+    localStorage.setItem('premium_unlocked', 'true');
+    
+    // Reset button text
+    const getSignalBtn = document.getElementById("get-signal");
+    if (getSignalBtn) {
+      getSignalBtn.textContent = "Obtenir Signal";
+    }
+    
+    // Close modal after 2 seconds
+    setTimeout(() => {
+      document.getElementById("premium-modal").style.display = "none";
+    }, 2000);
+  } else {
+    errorElement.style.display = "block";
+  }
+}
+
+// Function to open developer chat for premium access
+function openDeveloperChatForPremium() {
   const developerUsername = "Ibrahim_DZ_bot";
-  const prefillMessage = "Salut! Voici ma capture d'écran de dépôt pour le Bot 2.0 📸";
+  const prefillMessage = "Salut! Je veux débloquer le BOT 2.0 PREMIUM 🚀 (1200 DA)";
   const telegramUrl = `https://t.me/${developerUsername}?text=${encodeURIComponent(prefillMessage)}`;
   
   if (window.Telegram && window.Telegram.WebApp) {
@@ -533,18 +504,45 @@ function openDeveloperChatForScreenshot() {
   }
 }
 
-// Function to open developer chat for upgrade deposit
-function openDeveloperChatForUpgradeDeposit() {
-  const developerUsername = "Ibrahim_DZ_bot";
-  const prefillMessage = "Salut! Je veux faire le dépôt pour le Bot 2.0 (1200 DA) 🚀";
-  const telegramUrl = `https://t.me/${developerUsername}?text=${encodeURIComponent(prefillMessage)}`;
-  
-  if (window.Telegram && window.Telegram.WebApp) {
-    window.Telegram.WebApp.openTelegramLink(telegramUrl);
-  } else {
-    window.open(telegramUrl, '_blank');
+// Add event handlers for premium modal
+document.getElementById("unlock-premium-button").onclick = unlockPremium;
+document.getElementById("get-premium-button").onclick = openDeveloperChatForPremium;
+
+// Enter key handler for premium unlock
+document.getElementById("premium-unlock-input").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    unlockPremium();
   }
-}
+});
+
+// Clear error on input for premium
+document.getElementById("premium-unlock-input").addEventListener("input", function() {
+  document.getElementById("premium-unlock-error").style.display = "none";
+  document.getElementById("premium-unlock-success").style.display = "none";
+});
+
+// Update the window load event to check premium status and update button text
+window.addEventListener('load', function() {
+  const botUnlocked = localStorage.getItem('bot_unlocked');
+  const accountVerified = localStorage.getItem('account_verified');
+  const premiumUnlocked = localStorage.getItem('premium_unlocked');
+  
+  // Update button text based on remaining signals
+  const getSignalBtn = document.getElementById("get-signal");
+  if (getSignalBtn && botUnlocked !== 'true' && premiumUnlocked !== 'true') {
+    const currentCount = parseInt(localStorage.getItem('signal_count') || '0');
+    const remaining = MAX_FREE_SIGNALS - currentCount;
+    if (remaining > 0 && remaining < MAX_FREE_SIGNALS) {
+      getSignalBtn.textContent = `Obtenir Signal (${remaining} restants)`;
+    }
+  }
+  
+  // Only skip welcome screen if BOTH verification and unlock are complete
+  if (botUnlocked === 'true' && accountVerified === 'true') {
+    startBot();
+  }
+  // Otherwise show welcome screen (default behavior)
+});
 
 // Set event handlers
 document.getElementById("start-bot-button").onclick = startBot;
@@ -552,9 +550,6 @@ document.getElementById("modal-verify-button").onclick = verifyModalAccount;
 document.getElementById("modal-get-id-button").onclick = openDeveloperChatForId;
 document.getElementById("unlock-bot-button").onclick = unlockBot;
 document.getElementById("activate-now-button").onclick = openDeveloperChatForActivation;
-document.getElementById("upgrade-bot-button").onclick = upgradeBot;
-document.getElementById("upgrade-deposit-button").onclick = openDeveloperChatForUpgradeDeposit;
-document.getElementById("send-screenshot-button").onclick = openDeveloperChatForScreenshot;
 
 // Enter key handlers
 document.getElementById("modal-account-id").addEventListener("keypress", function(event) {
@@ -569,12 +564,6 @@ document.getElementById("unlock-code-input").addEventListener("keypress", functi
   }
 });
 
-document.getElementById("upgrade-code-input").addEventListener("keypress", function(event) {
-  if (event.key === "Enter") {
-    upgradeBot();
-  }
-});
-
 // Clear error on input
 document.getElementById("modal-account-id").addEventListener("input", function() {
   hideModalError();
@@ -585,23 +574,10 @@ document.getElementById("unlock-code-input").addEventListener("input", function(
   document.getElementById("unlock-success").style.display = "none";
 });
 
-document.getElementById("upgrade-code-input").addEventListener("input", function() {
-  document.getElementById("upgrade-error").style.display = "none";
-  document.getElementById("upgrade-success").style.display = "none";
-});
-
 // Check verification status on load
 window.addEventListener('load', function() {
   const botUnlocked = localStorage.getItem('bot_unlocked');
   const accountVerified = localStorage.getItem('account_verified');
-  const botUpgraded = localStorage.getItem('bot_upgraded');
-  
-  // If bot is upgraded, set unlimited signals
-  if (botUpgraded === 'true') {
-    freeSignalsCount = 999;
-  }
-  
-  updateSignalsCounter();
   
   // Only skip welcome screen if BOTH verification and unlock are complete
   if (botUnlocked === 'true' && accountVerified === 'true') {
