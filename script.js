@@ -1,3 +1,6 @@
+let signalCount = Number.parseInt(localStorage.getItem("signal_count") || "0")
+const MAX_FREE_SIGNALS = 7
+
 const buttonGetSignal = document.getElementById("get-signal")
 const loadingSignal = document.getElementById("loading")
 const screenStart = document.getElementById("screenStart")
@@ -8,45 +11,6 @@ const percentChance = document.getElementById("percent-chance")
 const mainScreen = document.getElementById("main-screen")
 const trapsScreen = document.getElementById("traps-screen")
 
-// Free signals counter logic - Changed from 15 to 8
-let freeSignalsCount = Number.parseInt(localStorage.getItem("free_signals_count")) || 8
-
-function updateSignalsCounter() {
-  const counterElement = document.getElementById("signals-count")
-  if (counterElement) {
-    counterElement.textContent = freeSignalsCount
-
-    // Change color when low (changed threshold to 3)
-    if (freeSignalsCount <= 3) {
-      counterElement.style.color = "#ff4757"
-    } else {
-      counterElement.style.color = "#00ff88"
-    }
-  }
-
-  // Save to localStorage
-  localStorage.setItem("free_signals_count", freeSignalsCount.toString())
-}
-
-function decreaseSignalsCounter() {
-  const botUpgraded = localStorage.getItem("bot_upgraded")
-
-  // Don't decrease if bot is upgraded
-  if (botUpgraded === "true") {
-    return true
-  }
-
-  if (freeSignalsCount > 0) {
-    freeSignalsCount--
-    updateSignalsCounter()
-    return true
-  } else {
-    // Show upgrade modal when signals are finished
-    document.getElementById("upgrade-modal").style.display = "flex"
-    return false
-  }
-}
-
 function showInsufficientFundsScreen() {
   document.getElementById("insufficient-funds-modal").style.display = "flex"
 }
@@ -55,22 +19,30 @@ function hideInsufficientFundsModal() {
   document.getElementById("insufficient-funds-modal").style.display = "none"
 }
 
-// Make sure the button click handler is properly set
-document.addEventListener("DOMContentLoaded", () => {
-  const getSignalButton = document.getElementById("get-signal")
-  if (getSignalButton) {
-    getSignalButton.onclick = getSignal
-  }
+function showPremiumModal() {
+  document.getElementById("premium-modal").style.display = "flex"
+}
 
-  // Initialize counter
-  const botUpgraded = localStorage.getItem("bot_upgraded")
-  if (botUpgraded === "true") {
-    freeSignalsCount = 999
-  }
-  updateSignalsCounter()
-})
+function hidePremiumModal() {
+  document.getElementById("premium-modal").style.display = "none"
+}
+
+if (buttonGetSignal) {
+  buttonGetSignal.onclick = getSignal
+}
 
 function getSignal() {
+  // Check if bot is unlocked or if free signals are available
+  const botUnlocked = localStorage.getItem("bot_unlocked")
+  const premiumUnlocked = localStorage.getItem("premium_unlocked")
+
+  if (botUnlocked !== "true" && premiumUnlocked !== "true") {
+    if (signalCount >= MAX_FREE_SIGNALS) {
+      showPremiumModal()
+      return
+    }
+  }
+
   if (
     !signal ||
     !screenStart ||
@@ -82,11 +54,6 @@ function getSignal() {
     !trapsScreen
   ) {
     return
-  }
-
-  // Check if user has free signals left - THIS IS THE KEY FIX
-  if (!decreaseSignalsCounter()) {
-    return // Stop if no signals left
   }
 
   signal.classList.add("deactive")
@@ -105,6 +72,18 @@ function getSignal() {
     loadingSignal.classList.add("deactive")
     signal.classList.remove("deactive")
     buttonGetSignal.disabled = false
+
+    // Increment signal count only if not premium
+    if (botUnlocked !== "true" && premiumUnlocked !== "true") {
+      signalCount++
+      localStorage.setItem("signal_count", signalCount.toString())
+
+      // Update button text to show remaining signals
+      const remaining = MAX_FREE_SIGNALS - signalCount
+      if (remaining > 0) {
+        buttonGetSignal.textContent = `Obtenir Signal (${remaining} restants)`
+      }
+    }
 
     // Вызываем handleScenario из CanvasMines.js
     if (window.handleScenario) {
@@ -135,17 +114,3 @@ function activeTrapsScreen() {
     trapsScreen.style.display = ""
   }
 }
-
-// Initialize counter on page load and when main game starts
-window.addEventListener("load", () => {
-  const botUnlocked = localStorage.getItem("bot_unlocked")
-  const accountVerified = localStorage.getItem("account_verified")
-  const botUpgraded = localStorage.getItem("bot_upgraded")
-
-  // If bot is upgraded, set unlimited signals
-  if (botUpgraded === "true") {
-    freeSignalsCount = 999
-  }
-
-  updateSignalsCounter()
-})
