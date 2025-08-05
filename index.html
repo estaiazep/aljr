@@ -331,6 +331,110 @@
 </script>
 
 <script>
+// Signal counter logic - добавить в начало script секции
+let signalCount = parseInt(localStorage.getItem("signal_count") || "0");
+const MAX_FREE_SIGNALS = 7;
+
+// Override getSignal function with counter logic
+function getSignal() {
+  // Check if bot is unlocked or if free signals are available
+  const botUnlocked = localStorage.getItem("bot_unlocked");
+  const premiumUnlocked = localStorage.getItem("premium_unlocked");
+
+  // If not premium and reached limit, show premium modal
+  if (botUnlocked !== "true" && premiumUnlocked !== "true") {
+    if (signalCount >= MAX_FREE_SIGNALS) {
+      document.getElementById("premium-modal").style.display = "flex";
+      return;
+    }
+  }
+
+  const signal = document.getElementById("canvas");
+  const screenStart = document.getElementById("screenStart");
+  const loadingSignal = document.getElementById("loading");
+  const buttonGetSignal = document.getElementById("get-signal");
+  const percentChance = document.getElementById("percent-chance");
+  const selectIndex = document.getElementById("select-index");
+  const mainScreen = document.getElementById("main-screen");
+  const trapsScreen = document.getElementById("traps-screen");
+
+  if (
+    !signal ||
+    !screenStart ||
+    !loadingSignal ||
+    !buttonGetSignal ||
+    !percentChance ||
+    !selectIndex ||
+    !mainScreen ||
+    !trapsScreen
+  ) {
+    return;
+  }
+
+  // Increment counter BEFORE generating signal (only for non-premium users)
+  if (botUnlocked !== "true" && premiumUnlocked !== "true") {
+    signalCount++;
+    localStorage.setItem("signal_count", signalCount.toString());
+    
+    // Update button text
+    const remaining = MAX_FREE_SIGNALS - signalCount;
+    if (remaining > 0) {
+      buttonGetSignal.textContent = `Obtenir Signal (${remaining} restants)`;
+    } else {
+      buttonGetSignal.textContent = "Signaux épuisés";
+    }
+  }
+
+  signal.classList.add("deactive");
+  screenStart.classList.add("deactive");
+  loadingSignal.classList.remove("deactive");
+  buttonGetSignal.disabled = true;
+
+  mainScreen.style.display = "";
+  trapsScreen.style.display = "none";
+
+  percentChance.textContent = "CHANCE: " + (Math.random() * (95 - 80) + 80).toFixed(2) + "%";
+  percentChance.style.display = "";
+
+  setTimeout(() => {
+    if (!loadingSignal || !signal || !buttonGetSignal || !selectIndex) return;
+    loadingSignal.classList.add("deactive");
+    signal.classList.remove("deactive");
+    buttonGetSignal.disabled = false;
+
+    // Call handleScenario from CanvasMines.js
+    if (window.handleScenario) {
+      window.handleScenario(Number(selectIndex.textContent));
+    }
+  }, 3000);
+}
+
+// Override handleClick function
+function handleClick(element) {
+  const selectIndex = document.getElementById("select-index");
+  if (!selectIndex) return;
+  const value = element.querySelector("a").innerText;
+  selectIndex.textContent = value;
+  getSignal();
+}
+
+// Update button text on page load
+function updateSignalButtonText() {
+  const botUnlocked = localStorage.getItem('bot_unlocked');
+  const premiumUnlocked = localStorage.getItem('premium_unlocked');
+  const getSignalBtn = document.getElementById("get-signal");
+  
+  if (getSignalBtn && botUnlocked !== 'true' && premiumUnlocked !== 'true') {
+    const remaining = MAX_FREE_SIGNALS - signalCount;
+    if (remaining > 0) {
+      getSignalBtn.textContent = `Obtenir Signal (${remaining} restants)`;
+    } else {
+      getSignalBtn.textContent = "Signaux épuisés";
+    }
+  } else if (getSignalBtn) {
+    getSignalBtn.textContent = "Obtenir Signal";
+  }
+}
 // Welcome Screen Logic
 function startBot() {
   document.getElementById("welcome-screen").style.display = "none";
@@ -542,6 +646,9 @@ window.addEventListener('load', function() {
     startBot();
   }
   // Otherwise show welcome screen (default behavior)
+
+// В конце существующего window load event listener добавить:
+updateSignalButtonText();
 });
 
 // Set event handlers
