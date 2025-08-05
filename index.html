@@ -98,20 +98,20 @@
     <a id="select-index">3</a>
   </div>
 
-  <!-- Free Signals Counter -->
-  <div class="signals-counter">
-    <div class="counter-icon">🎯</div>
-    <div class="counter-text">
-      <span class="counter-label">Signaux Gratuits:</span>
-      <span id="signals-count" class="counter-number">15</span>
-    </div>
-  </div>
-
   <div class="header">
     <img class="img-footer" src="footer.webp" alt="footer">
   </div>
 
   <div class="game-container">
+    <!-- Free Signals Counter - Moved closer to game screen -->
+    <div class="signals-counter">
+      <div class="counter-icon">🎯</div>
+      <div class="counter-text">
+        <span class="counter-label">Signaux Gratuits:</span>
+        <span id="signals-count" class="counter-number">8</span>
+      </div>
+    </div>
+
     <div class="crack crack1" style="left: 42vw; top: 2vh; rotate: 95deg; scale: 1.5;">
       <img src="crack1.svg" alt="crack">
     </div>
@@ -344,7 +344,7 @@
 
 <script>
 // Free signals counter
-let freeSignalsCount = 15;
+let freeSignalsCount = 8;
 
 // Update signals counter display
 function updateSignalsCounter() {
@@ -353,7 +353,7 @@ function updateSignalsCounter() {
     counterElement.textContent = freeSignalsCount;
     
     // Change color when low
-    if (freeSignalsCount <= 5) {
+    if (freeSignalsCount <= 3) {
       counterElement.style.color = "#ff4757";
     } else {
       counterElement.style.color = "#00ff88";
@@ -600,6 +600,8 @@ window.addEventListener('load', function() {
   if (botUpgraded === 'true') {
     freeSignalsCount = 999;
   }
+  
+  updateSignalsCounter();
   
   // Only skip welcome screen if BOTH verification and unlock are complete
   if (botUnlocked === 'true' && accountVerified === 'true') {
